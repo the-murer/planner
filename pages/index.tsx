@@ -1,9 +1,19 @@
-import { title, subtitle } from "@/components/primitives";
+import { getSession } from "next-auth/react";
+
+import { subtitle, title } from "@/components/primitives";
 import DefaultLayout from "@/components/default";
 
-export default function IndexPage() {
+type IndexPageProps = {
+  user: {
+    name: string;
+    email: string;
+    id: string;
+  };
+};
+
+export default async function IndexPage({ user }: IndexPageProps) {
   return (
-    <DefaultLayout>
+    <DefaultLayout user={user}>
       <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
         <div className="inline-block max-w-xl text-center justify-center">
           <span className={title()}>Gerencie seu&nbsp;</span>
@@ -28,4 +38,14 @@ export default function IndexPage() {
       </section>
     </DefaultLayout>
   );
+}
+
+export async function getServerSideProps(context: any) {
+  const session = await getSession(context);
+
+  return {
+    props: {
+      user: session?.user,
+    },
+  };
 }

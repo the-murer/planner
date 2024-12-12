@@ -1,5 +1,3 @@
-import { getSession } from "next-auth/react";
-import { useEffect, useState } from "react";
 import {
   Button,
   Input,
@@ -12,32 +10,13 @@ import {
   SelectItem,
   useDisclosure,
 } from "@nextui-org/react";
+import { useEffect, useState } from "react";
+import { getSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 
-import DefaultLayout from "@/components/default";
 import TableComponent from "@/components/table";
-
-const rows = [
-  {
-    key: "1",
-    name: "John Doe",
-    email: "john@example.com",
-    phone: "555-123-4567",
-  },
-  {
-    key: "2",
-    name: "Jane Doe",
-    email: "jane@example.com",
-    phone: "555-123-4567",
-  },
-  {
-    key: "3",
-    name: "Bob Smith",
-    email: "bob@example.com",
-    phone: "555-123-4567",
-  },
-];
+import DefaultLayout from "@/components/default";
 
 const columns = [
   { key: "name", label: "Name" },
@@ -53,7 +32,7 @@ type DashPageProps = {
   };
 };
 
-export default function DashPage({ user }: DashPageProps) {
+export default async function DashPage({ user }: DashPageProps) {
   const [meets, setMeets] = useState<any[]>([]);
   const [squads, setSquads] = useState<string[]>([]);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();

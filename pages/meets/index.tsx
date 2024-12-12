@@ -1,7 +1,5 @@
 "use server";
-import { getSession } from "next-auth/react";
-import { Button } from "@nextui-org/button";
-import { Plus } from "lucide-react";
+
 import {
   Input,
   Modal,
@@ -14,11 +12,14 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { Button } from "@nextui-org/button";
+import { Plus } from "lucide-react";
+import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
 import DefaultLayout from "@/components/default";
-import TableComponent from "@/components/table";
 import { Meet } from "@/types";
+import TableComponent from "@/components/table";
 
 const timeOfDays = [
   { key: "Manhã", label: "Manhã" },
@@ -54,7 +55,7 @@ type MeetsPageProps = {
   userIsAdmin: boolean;
 };
 
-export default function MeetsPage({
+export default async function MeetsPage({
   user,
   meets,
   userIsAdmin,
@@ -63,7 +64,11 @@ export default function MeetsPage({
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { register, handleSubmit, watch, reset, control } = useForm({
     defaultValues: {
-      form: [{ question: "", type: "string" }], // Inicializa com um campo
+      name: "",
+      timeOfDay: "",
+      weekDay: "",
+      local: "",
+      form: [{ question: "", type: "string" }],
     },
   });
 

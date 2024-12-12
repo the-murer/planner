@@ -1,8 +1,9 @@
 "use server";
-import { getSession } from "next-auth/react";
-import { useRouter } from "next/router";
+
 import { useEffect, useState } from "react";
 import { Card } from "@nextui-org/react";
+import { getSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 import DefaultLayout from "@/components/default";
 import { LoadComponent } from "@/components/loadComponent";
@@ -17,7 +18,7 @@ type MeetsPageProps = {
   };
 };
 
-export default function MeetsPage({ user }: MeetsPageProps) {
+export default async function MeetsPage({ user }: MeetsPageProps) {
   const [loading, setLoading] = useState(true);
   const [forms, setForms] = useState(undefined);
   const [meet, setMeet] = useState<Meet | undefined>(undefined);
