@@ -11,7 +11,7 @@ type IndexPageProps = {
   };
 };
 
-export default async function IndexPage({ user }: IndexPageProps) {
+export default function IndexPage({ user }: IndexPageProps) {
   return (
     <DefaultLayout user={user}>
       <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
@@ -26,15 +26,6 @@ export default async function IndexPage({ user }: IndexPageProps) {
             Gerencie suas weeklys com a plataforma Team Planner.
           </div>
         </div>
-
-        {/* <div className="mt-8">
-          <Snippet hideCopyButton hideSymbol variant="bordered">
-            <span>
-              Get started by editing{" "}
-              <Code color="primary">pages/index.tsx</Code>
-            </span>
-          </Snippet>
-        </div> */}
       </section>
     </DefaultLayout>
   );
@@ -45,7 +36,7 @@ export async function getServerSideProps(context: any) {
 
   return {
     props: {
-      user: session?.user,
+      user: session?.user || null,
     },
   };
 }

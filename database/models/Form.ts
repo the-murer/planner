@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 interface Forms extends mongoose.Document {
   name: string;
-  sector: string;
+  squad: string;
   answers: mongoose.Document[];
   userId: string;
   meetId: string;
@@ -15,7 +15,7 @@ const FormSchema = new mongoose.Schema<Forms>(
       type: String,
       required: true,
     },
-    sector: {
+    squad: {
       type: String,
       required: true,
     },

@@ -11,7 +11,7 @@ type AboutPageProps = {
   };
 };
 
-export default async function AboutPage({ user }: AboutPageProps) {
+export default function AboutPage({ user }: AboutPageProps) {
   return (
     <DefaultLayout user={user}>
       <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
@@ -37,7 +37,7 @@ export async function getServerSideProps(context: any) {
 
   return {
     props: {
-      user: session.user,
+      user: session.user || null,
     },
   };
 }

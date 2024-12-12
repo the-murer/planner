@@ -33,11 +33,7 @@ type UserPageProps = {
   companyId: string;
 };
 
-export default async function UserPage({
-  user,
-  users,
-  companyId,
-}: UserPageProps) {
+export default function UserPage({ user, users, companyId }: UserPageProps) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [permission, setPermission] = useState<string>("false"); // Default permission is 'false' (Membro)
 

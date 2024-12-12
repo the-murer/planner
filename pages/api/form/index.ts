@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import dbConnect from "@/database/dbConnect";
 import Form from "@/database/models/Form";
+import dbConnect from "@/database/dbConnect";
 
 export default async function handler(
   req: NextApiRequest,
@@ -26,9 +26,20 @@ export default async function handler(
         if (!form) return res.status(400).json({ success: false });
 
         res.status(200).json({ success: true, form });
-      } catch (error) {
-        console.log("🚀 ~ error => ", error);
-        res.status(400).json({ success: false });
+      } catch (error: any) {
+        res.status(400).json({ success: false, error: error.message });
+      }
+      break;
+
+    case "POST":
+      try {
+        const formBody = JSON.parse(body);
+
+        const form = await Form.create(formBody);
+
+        res.status(200).json({ success: true, form });
+      } catch (error: any) {
+        res.status(400).json({ success: false, error: error.message });
       }
       break;
 
@@ -44,9 +55,8 @@ export default async function handler(
         if (!form) return res.status(400).json({ success: false });
 
         res.status(200).json({ success: true, form });
-      } catch (error) {
-        console.log("🚀 ~ error => ", error);
-        res.status(400).json({ success: false });
+      } catch (error: any) {
+        res.status(400).json({ success: false, error: error.message });
       }
       break;
 
@@ -57,9 +67,8 @@ export default async function handler(
         if (!deletedForm) return res.status(400).json({ success: false });
 
         res.status(200).json({ success: true, form: deletedForm });
-      } catch (error) {
-        console.log("🚀 ~ error => ", error);
-        res.status(400).json({ success: false });
+      } catch (error: any) {
+        res.status(400).json({ success: false, error: error.message });
       }
       break;
 

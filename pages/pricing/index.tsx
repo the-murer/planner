@@ -11,7 +11,7 @@ type PricingPageProps = {
   };
 };
 
-export default async function PricingPage({ user }: PricingPageProps) {
+export default function PricingPage({ user }: PricingPageProps) {
   return (
     <DefaultLayout user={user}>
       <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">

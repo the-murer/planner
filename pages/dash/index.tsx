@@ -32,7 +32,7 @@ type DashPageProps = {
   };
 };
 
-export default async function DashPage({ user }: DashPageProps) {
+export default function DashPage({ user }: DashPageProps) {
   const [meets, setMeets] = useState<any[]>([]);
   const [squads, setSquads] = useState<string[]>([]);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -157,7 +157,7 @@ export default async function DashPage({ user }: DashPageProps) {
                         label="Squad"
                         placeholder="Selecione a squad"
                         variant="bordered"
-                        {...register(`answers.${index}.squad`, {
+                        {...register("squad", {
                           required: true,
                         })}
                         className="mb-2"

@@ -55,7 +55,7 @@ type MeetsPageProps = {
   userIsAdmin: boolean;
 };
 
-export default async function MeetsPage({
+export default function MeetsPage({
   user,
   meets,
   userIsAdmin,

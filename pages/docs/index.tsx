@@ -11,7 +11,7 @@ type DocsPageProps = {
   };
 };
 
-export default async function DocsPage({ user }: DocsPageProps) {
+export default function DocsPage({ user }: DocsPageProps) {
   return (
     <DefaultLayout user={user}>
       <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
