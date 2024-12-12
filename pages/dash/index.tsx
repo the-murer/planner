@@ -1,4 +1,19 @@
 import { getSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import {
+  Button,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Select,
+  SelectItem,
+  useDisclosure,
+} from "@nextui-org/react";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/router";
 
 import DefaultLayout from "@/components/default";
 import TableComponent from "@/components/table";
@@ -26,8 +41,8 @@ const rows = [
 
 const columns = [
   { key: "name", label: "Name" },
-  { key: "email", label: "Email" },
-  { key: "phone", label: "Phone" },
+  { key: "weekDay", label: "Dia da semana" },
+  { key: "timeOfDay", label: "Período do dia" },
 ];
 
 type DashPageProps = {
@@ -39,6 +54,71 @@ type DashPageProps = {
 };
 
 export default function DashPage({ user }: DashPageProps) {
+  const [meets, setMeets] = useState<any[]>([]);
+  const [squads, setSquads] = useState<string[]>([]);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { register, handleSubmit, watch, reset, control, setValue, getValues } =
+    useForm();
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchForms = async () => {
+      if (!user) return;
+
+      const response = await fetch(`/api/meet/pendents?id=${user.id}`, {
+        method: "GET",
+      });
+
+      const resp = await response.json();
+
+      setMeets(resp.meets);
+    };
+
+    fetchForms();
+  }, []);
+
+  const openModal = (item: any) => {
+    console.log("🚀 ~ item => ", item);
+    setValue(
+      "answers",
+      item.form.map((answer: any) => ({ ...answer })),
+    );
+    setValue("meetId", item._id);
+    setValue("companyId", item.companyId);
+    setValue("userId", user.id);
+    setValue("name", user.name);
+
+    setSquads(item.squads);
+
+    onOpenChange();
+  };
+
+  const onSubmit = async (data: any) => {
+    try {
+      const res = await fetch("/api/form", {
+        method: "POST",
+        body: JSON.stringify({ ...data, userId: user.id }),
+      });
+
+      setMeets(
+        meets.map((meet: any) => {
+          if (meet._id === data.meetId) {
+            return {
+              ...meet,
+              isPending: false,
+            };
+          }
+
+          return meet;
+        }),
+      );
+
+      console.log("🚀 ~ res => ", res);
+    } catch (error) {
+      console.log("🚀 ~ error => ", error);
+    }
+  };
+
   return (
     <DefaultLayout user={user}>
       <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
@@ -49,26 +129,100 @@ export default function DashPage({ user }: DashPageProps) {
           </h1>
         </div>
         <div className="flex flex-col lg:flex-row gap-8 w-full max-w-5xl">
-          {/* Left Panel - Reuniões */}
           <div className="flex-1 p-6 rounded-lg shadow-md">
             <h2 className="text-center text-lg font-medium mb-4">
-              3 Reuniões marcadas
+              {`${meets.length} Reuniõe(s) marcada(s)`}
             </h2>
             <div className="overflow-hidden rounded-md">
-              <TableComponent columns={columns} rows={rows} />
+              <TableComponent
+                columns={columns}
+                rows={meets}
+                onClickEvent={(item) => router.push(`/meets/${item._id}`)}
+              />
             </div>
           </div>
-          {/* Right Panel - Formulários */}
           <div className="flex-1 p-6 rounded-lg shadow-md">
             <h2 className="text-center text-lg font-medium mb-4">
-              2 Formulários pendentes
+              {`${meets.filter((meet: any) => meet.isPending).length} Formulário(s) pendente(s)`}
             </h2>
             <div className="overflow-hidden rounded-md">
-              <TableComponent columns={columns} rows={rows} />
+              <TableComponent
+                columns={columns}
+                rows={meets.filter((meet: any) => meet.isPending)}
+                onClickEvent={(item) => openModal(item)}
+              />
             </div>
           </div>
         </div>
       </section>
+      <Modal
+        isOpen={isOpen}
+        placement="top-center"
+        scrollBehavior="inside"
+        onOpenChange={onOpenChange}
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Responder formulário
+              </ModalHeader>
+              <form
+                className="flex flex-col gap-4"
+                onSubmit={handleSubmit(onSubmit)}
+              >
+                <ModalBody>
+                  {getValues("answers")?.map((answer: any, index: number) => (
+                    <div key={index}>
+                      <Select
+                        label="Squad"
+                        placeholder="Selecione a squad"
+                        variant="bordered"
+                        {...register(`answers.${index}.squad`, {
+                          required: true,
+                        })}
+                        className="mb-2"
+                      >
+                        {squads.map((squad) => (
+                          <SelectItem key={squad}>{squad}</SelectItem>
+                        ))}
+                      </Select>
+                      <Input
+                        label={answer.question}
+                        variant="bordered"
+                        {...register(`answers.${index}.answer`, {
+                          required: true,
+                        })}
+                        placeholder={`Pergunta ${index + 1}`}
+                      />
+                    </div>
+                  ))}
+                </ModalBody>
+                <ModalFooter>
+                  <Button
+                    color="danger"
+                    variant="flat"
+                    onPress={() => {
+                      onClose(), reset();
+                    }}
+                  >
+                    Fechar
+                  </Button>
+                  <Button
+                    color="primary"
+                    type="submit"
+                    onPress={() => {
+                      onClose(), watch();
+                    }}
+                  >
+                    Enviar Formulário
+                  </Button>
+                </ModalFooter>
+              </form>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </DefaultLayout>
   );
 }

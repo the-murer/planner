@@ -14,9 +14,11 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { useRouter } from "next/router";
 
 import DefaultLayout from "@/components/default";
 import TableComponent from "@/components/table";
+import { Meet } from "@/types";
 
 const timeOfDays = [
   { key: "Manhã", label: "Manhã" },
@@ -25,13 +27,13 @@ const timeOfDays = [
 ];
 
 const weekDays = [
-  { key: "Segunda-feira", label: "Segunda-feira" },
-  { key: "Terça-feira", label: "Terça-feira" },
-  { key: "Quarta-feira", label: "Quarta-feira" },
-  { key: "Quinta-feira", label: "Quinta-feira" },
-  { key: "Sexta-feira", label: "Sexta-feira" },
-  { key: "Sábado", label: "Sábado" },
-  { key: "Domingo", label: "Domingo" },
+  { key: "0", label: "Domingo" },
+  { key: "1", label: "Segunda-feira" },
+  { key: "2", label: "Terça-feira" },
+  { key: "3", label: "Quarta-feira" },
+  { key: "4", label: "Quinta-feira" },
+  { key: "5", label: "Sexta-feira" },
+  { key: "6", label: "Sábado" },
 ];
 
 const columns = [
@@ -39,6 +41,7 @@ const columns = [
   { key: "timeOfDay", label: "Horário" },
   { key: "weekDay", label: "Dia da semana" },
   { key: "local", label: "Local" },
+  { key: "actions", label: "Ações" },
 ];
 
 type MeetsPageProps = {
@@ -56,6 +59,7 @@ export default function MeetsPage({
   meets,
   userIsAdmin,
 }: MeetsPageProps) {
+  const router = useRouter();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { register, handleSubmit, watch, reset, control } = useForm({
     defaultValues: {
@@ -81,6 +85,10 @@ export default function MeetsPage({
     }
   };
 
+  const onDoubleClickEvent = (e: Meet) => {
+    router.push(`/meets/${e._id}`);
+  };
+
   return (
     <DefaultLayout user={user}>
       <h1 className="text-[3rem] lg:text-5xl font-semibold tracking-tight">
@@ -88,6 +96,7 @@ export default function MeetsPage({
         <Button
           isIconOnly
           className="ml-auto"
+          hidden={!userIsAdmin}
           radius="md"
           size="md"
           style={{ marginLeft: "10px", marginTop: "-10px" }}
@@ -99,7 +108,12 @@ export default function MeetsPage({
       </h1>
       {/* <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10"> */}
       <div className="mt-10">
-        <TableComponent columns={columns} rows={meets} />
+        <TableComponent
+          columns={columns}
+          rows={meets}
+          // onClickEvent={onClickEvent}
+          onDoubleClickEvent={onDoubleClickEvent}
+        />
       </div>
       <Modal
         isOpen={isOpen}
@@ -186,7 +200,7 @@ export default function MeetsPage({
                     color="primary"
                     style={{ marginBottom: "10px" }}
                     variant="bordered"
-                    onClick={() => append({ question: "", type: "string" })} // Adiciona uma nova pergunta vazia
+                    onClick={() => append({ question: "", type: "string" })}
                   >
                     + Adicionar Pergunta
                   </Button>

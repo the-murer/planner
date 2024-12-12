@@ -9,5 +9,6 @@ export default function Handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>,
 ) {
+  console.log("🚀 ~ req => ", req.query);
   res.status(200).json({ name: "Funcionando" });
 }

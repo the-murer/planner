@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import dbConnect from "@/database/dbConnect";
-import User from "@/database/models/User";
+import Form from "@/database/models/Form";
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,42 +17,13 @@ export default async function handler(
   switch (method) {
     case "GET":
       try {
-        const user = await User.findById(id);
+        const forms = await Form.find({ meetId: id });
 
-        if (!user) return res.status(400).json({ success: false });
+        if (!forms) return res.status(400).json({ success: false });
 
-        res.status(200).json({ success: true, data: user });
-      } catch (error) {
-        console.log("🚀 ~ error => ", error);
-        res.status(400).json({ success: false });
-      }
-      break;
-
-    case "PUT":
-      try {
-        const user = await User.findByIdAndUpdate(id, req.body, {
-          new: true,
-        });
-
-        if (!user) return res.status(400).json({ success: false });
-
-        res.status(200).json({ success: true, data: user });
-      } catch (error) {
-        console.log("🚀 ~ error => ", error);
-        res.status(400).json({ success: false });
-      }
-      break;
-
-    case "DELETE" /* Delete a model by its ID */:
-      try {
-        const deletedUser = await User.deleteOne({ _id: id });
-
-        if (!deletedUser) return res.status(400).json({ success: false });
-
-        res.status(200).json({ success: true, data: {} });
-      } catch (error) {
-        console.log("🚀 ~ error => ", error);
-        res.status(400).json({ success: false });
+        res.status(200).json({ success: true, forms });
+      } catch (error: any) {
+        res.status(400).json({ success: false, error: error.message });
       }
       break;
 

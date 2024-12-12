@@ -9,7 +9,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const { method } = req;
+  const {
+    query: { id },
+    method,
+  } = req;
 
   await dbConnect();
   switch (method) {
@@ -26,8 +29,7 @@ export default async function handler(
 
         res.status(200).json({ success: true, meets });
       } catch (error: any) {
-        console.log("🚀 ~ error => ", error);
-        res.status(400).json({ success: false });
+        res.status(400).json({ success: false, error: error.message });
       }
       break;
     case "POST":
@@ -53,9 +55,8 @@ export default async function handler(
           success: true,
           meet,
         });
-      } catch (error) {
-        console.log("🚀 ~ error => ", error);
-        res.status(400).json({ success: false });
+      } catch (error: any) {
+        res.status(400).json({ success: false, error: error.message });
       }
       break;
     default:

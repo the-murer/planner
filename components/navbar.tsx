@@ -14,7 +14,7 @@ import { link as linkStyles } from "@nextui-org/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
 import { LogOut, UserCircle } from "lucide-react";
-import { getSession, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
@@ -139,18 +139,3 @@ export const Navbar = ({ user }: NavBarProps) => {
     </NextUINavbar>
   );
 };
-
-export async function getServerSideProps(context: any) {
-  console.log("NAVABER");
-  const session = await getSession(context);
-
-  // const userIsAdmin = session.user.companies.find(
-  //   (company) => company.isAdmin === true,
-  // );
-
-  return {
-    props: {
-      user: session.user,
-    },
-  };
-}

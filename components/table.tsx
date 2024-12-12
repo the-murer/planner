@@ -18,6 +18,8 @@ type TableComponentProps = {
   rows: Array<any>;
   columns: Array<any>;
   pagination?: PaginationProps;
+  onClickEvent?: (e: any) => void;
+  onDoubleClickEvent?: (e: any) => void;
 };
 
 const paginatedComponent = ({ page, pages, setPage }: PaginationProps) => (
@@ -38,6 +40,8 @@ export default function TableComponent({
   columns,
   rows,
   pagination,
+  onClickEvent = () => null,
+  onDoubleClickEvent = () => null,
 }: TableComponentProps) {
   return (
     <div
@@ -49,6 +53,7 @@ export default function TableComponent({
     >
       <Table
         fullWidth
+        isStriped
         aria-label="Example table with dynamic content"
         bottomContent={pagination ? paginatedComponent(pagination) : null}
         classNames={{
@@ -64,7 +69,11 @@ export default function TableComponent({
         </TableHeader>
         <TableBody>
           {rows.map((row) => (
-            <TableRow key={row.key}>
+            <TableRow
+              key={row.key}
+              onClick={() => onClickEvent(row)}
+              onDoubleClick={() => onDoubleClickEvent(row)}
+            >
               {(columnKey) => <TableCell>{row[columnKey]}</TableCell>}
             </TableRow>
           ))}

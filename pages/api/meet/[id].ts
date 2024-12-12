@@ -20,8 +20,8 @@ export default async function handler(
       try {
         const meet = await Meet.findById(id);
 
-        if (meet.companyId !== companyId)
-          return res.status(404).json({ success: false });
+        // if (meet.companyId !== companyId)
+        //   return res.status(404).json({ success: false });
 
         if (!meet) return res.status(400).json({ success: false });
 
