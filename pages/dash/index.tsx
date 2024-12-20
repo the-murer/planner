@@ -117,6 +117,7 @@ export default function DashPage({ user }: DashPageProps) {
                 columns={columns}
                 rows={meets}
                 onClickEvent={(item) => router.push(`/meets/${item._id}`)}
+                // onClickEvent={(item) => openModal(item)}
               />
             </div>
           </div>
@@ -151,21 +152,29 @@ export default function DashPage({ user }: DashPageProps) {
                 onSubmit={handleSubmit(onSubmit)}
               >
                 <ModalBody>
+                  <Input
+                    label="nome"
+                    variant="bordered"
+                    {...register(`name`, {
+                      required: true,
+                    })}
+                    placeholder={`Nome`}
+                  />
+                  <Select
+                    label="Squad"
+                    placeholder="Selecione a squad"
+                    variant="bordered"
+                    {...register("squad", {
+                      required: true,
+                    })}
+                    className="mb-2"
+                  >
+                    {squads.map((squad) => (
+                      <SelectItem key={squad}>{squad}</SelectItem>
+                    ))}
+                  </Select>
                   {getValues("answers")?.map((answer: any, index: number) => (
                     <div key={index}>
-                      <Select
-                        label="Squad"
-                        placeholder="Selecione a squad"
-                        variant="bordered"
-                        {...register("squad", {
-                          required: true,
-                        })}
-                        className="mb-2"
-                      >
-                        {squads.map((squad) => (
-                          <SelectItem key={squad}>{squad}</SelectItem>
-                        ))}
-                      </Select>
                       <Input
                         label={answer.question}
                         variant="bordered"

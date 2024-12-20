@@ -1,5 +1,5 @@
-import { Types } from "mongoose";
 import { SVGProps } from "react";
+import { Types } from "mongoose";
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
   size?: number;
@@ -20,7 +20,8 @@ export type Meet = {
   weekDay: string;
   local: string;
   userId: string;
-  forms: string[];
+  companyId: string;
+  form: any[];
   users: string[];
   squads: string[];
 };

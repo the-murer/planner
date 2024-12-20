@@ -5,6 +5,8 @@ import {
   NavbarMenuToggle,
   NavbarBrand,
   NavbarItem,
+  NavbarMenuItem,
+  NavbarMenu,
 } from "@nextui-org/navbar";
 import { Button } from "@nextui-org/button";
 import { Kbd } from "@nextui-org/kbd";
@@ -15,6 +17,7 @@ import NextLink from "next/link";
 import clsx from "clsx";
 import { LogOut, UserCircle } from "lucide-react";
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/router";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
@@ -49,12 +52,16 @@ export const Navbar = ({ user }: NavBarProps) => {
       type="search"
     />
   );
+  const router = useRouter();
 
   return (
     <NextUINavbar maxWidth="xl" position="sticky">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand className="gap-3 max-w-fit">
-          <NextLink className="flex justify-start items-center gap-1" href="/">
+          <NextLink
+            className="flex justify-start items-center gap-1"
+            href={user ? "/dash" : "/"}
+          >
             <Logo />
             <p className="font-bold text-inherit">Team Planner</p>
           </NextLink>
@@ -124,18 +131,47 @@ export const Navbar = ({ user }: NavBarProps) => {
         <NavbarMenuToggle />
       </NavbarContent>
 
-      {/* <NavbarMenu>
-        {searchInput}
+      <NavbarMenu>
+        {/* {searchInput} */}
         <div className="mx-4 mt-2 flex flex-col gap-2">
-          {siteConfig.navItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-              <Link color="foreground" href={item.href} size="lg">
-                {item.label}
-              </Link>
-            </NavbarMenuItem>
-          ))}
+          {(!user ? siteConfig.navItems : siteConfig.authNavItems).map(
+            (item, index) => (
+              <NavbarMenuItem key={`${item}-${index}`}>
+                <Link color="foreground" href={item.href} size="lg">
+                  {item.label}
+                </Link>
+              </NavbarMenuItem>
+            ),
+          )}
         </div>
-      </NavbarMenu> */}
+        <NavbarItem>
+          {!user ? (
+            <Button
+              as={Link}
+              className="text-sm font-normal text-default-600 bg-default-100"
+              href="/login"
+              startContent={<UserCircle className="text-primary" />}
+              variant="flat"
+            >
+              Login
+            </Button>
+          ) : (
+            <Button
+              className="text-sm font-normal text-default-600 bg-default-100"
+              startContent={<LogOut className="text-primary" />}
+              variant="flat"
+              onClick={() => {
+                signOut({
+                  redirect: false,
+                });
+                router.push("/");
+              }}
+            >
+              Logout
+            </Button>
+          )}
+        </NavbarItem>
+      </NavbarMenu>
     </NextUINavbar>
   );
 };

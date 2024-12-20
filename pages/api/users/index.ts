@@ -39,17 +39,15 @@ export default async function handler(
       break;
     case "POST":
       try {
-        const { companyId, isAdmin } = req.body;
+        const body = JSON.parse(req.body);
+
+        const { companyId, isAdmin } = body;
 
         const company = await Company.findById(companyId);
 
         if (!company) return res.status(400).json({ success: false });
 
-        const user = await generateUserCreatePayload(
-          req.body,
-          company,
-          isAdmin,
-        );
+        const user = await generateUserCreatePayload(body, company, isAdmin);
 
         await User.create(user);
 
@@ -61,9 +59,8 @@ export default async function handler(
           accessToken,
           refreshToken,
         });
-      } catch (error) {
-        console.log("🚀 ~ error => ", error);
-        res.status(400).json({ success: false });
+      } catch (error: any) {
+        res.status(400).json({ success: false, error: error.message });
       }
       break;
     default:

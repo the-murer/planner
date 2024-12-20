@@ -90,7 +90,7 @@ export default function UserPage({ user, users, companyId }: UserPageProps) {
                   value={permission}
                   onChange={changePermission}
                 >
-                  <Radio value="true">Administador</Radio>
+                  <Radio value="true">Administrador</Radio>
                   <Radio value="false">Membro</Radio>
                 </RadioGroup>
               </ModalBody>

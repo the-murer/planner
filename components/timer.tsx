@@ -1,6 +1,6 @@
+import React, { useEffect, useState } from "react";
 import { Button } from "@nextui-org/button";
 import { Clock } from "lucide-react";
-import React, { useEffect, useState } from "react";
 
 export const Timer = () => {
   const [started, setStarted] = useState(false);

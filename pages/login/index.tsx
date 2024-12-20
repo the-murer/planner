@@ -9,7 +9,6 @@ import {
 } from "@nextui-org/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
 
@@ -29,7 +28,6 @@ export default function DocsPage() {
           password: data.password,
         });
 
-        console.log("🚀 ~ res => ", res);
         if (res?.ok) {
           router.push("/dash");
         }
@@ -40,13 +38,20 @@ export default function DocsPage() {
       const { companyId, isAdmin } = router.query;
 
       try {
-        const response = await axios.post("/api/users", {
-          ...data,
-          companyId,
-          isAdmin: isAdmin === "true",
+        const response = await fetch("/api/users", {
+          method: "POST",
+          body: JSON.stringify({
+            ...data,
+            companyId,
+            isAdmin: isAdmin === "true",
+          }),
         });
 
-        if (response.data.success) {
+        const res = await response.json();
+
+        console.log("🚀 ~ onSubmit ~ res => ", res);
+
+        if (res.data.success) {
           router.push("/");
         }
       } catch (error) {

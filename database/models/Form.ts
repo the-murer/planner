@@ -25,7 +25,7 @@ const FormSchema = new mongoose.Schema<Forms>(
     },
     userId: {
       type: String,
-      required: true,
+      required: false,
     },
     meetId: {
       type: String,
